@@ -7,24 +7,33 @@ export default function About() {
         About Rameez Estate
       </h1>
       <p className="mb-4 text-slate-700">
-        Sahand Estate is a leading real estate agency that specializes in
-        helping clients buy, sell, and rent properties in the most desirable
-        neighborhoods. Our team of experienced agents is dedicated to providing
-        exceptional service and making the buying and selling process as smooth
-        as possible.
+        Welcome to Rameez Estate, your premier destination for luxury real
+        estate in India. At Rameez Estate, we specialize in offering a diverse
+        portfolio of premium residential and commercial properties that cater to
+        the discerning tastes of our clients. Our commitment is to provide
+        unparalleled service, ensuring that each property transaction is
+        seamless and exceeds expectations.
       </p>
       <p className="mb-4 text-slate-700">
-        Our mission is to help our clients achieve their real estate goals by
-        providing expert advice, personalized service, and a deep understanding
-        of the local market. Whether you are looking to buy, sell, or rent a
-        property, we are here to help you every step of the way.
+        With a deep understanding of the Indian real estate market, Rameez
+        Estate prides itself on offering meticulously curated listings that span
+        the country’s most sought-after locations. From opulent city apartments
+        with stunning skyline views to serene countryside villas surrounded by
+        nature, we bring you properties that epitomize luxury and comfort.
       </p>
       <p className="mb-4 text-slate-700">
-        Our team of agents has a wealth of experience and knowledge in the real
-        estate industry, and we are committed to providing the highest level of
-        service to our clients. We believe that buying or selling a property
-        should be an exciting and rewarding experience, and we are dedicated to
-        making that a reality for each and every one of our clients.
+        At Rameez Estate, our core values of integrity, excellence, and customer
+        satisfaction drive everything we do. Our dedicated team of experienced
+        real estate professionals is here to guide you through every step of
+        your property journey, from initial consultation to final acquisition.
+        We believe in building lasting relationships with our clients, grounded
+        in trust and transparency.
+      </p>
+      <p className="mb-4 text-slate-700">
+        Explore the finest properties India has to offer with Rameez Estate,
+        where your dream home is just a step away. Whether you are looking to
+        buy, sell, or invest, we are here to help you navigate the dynamic world
+        of real estate with ease and confidence.
       </p>
     </div>
   );
