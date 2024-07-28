@@ -66,46 +66,71 @@ export const getListings = async (req, res, next) => {
   try {
     const limit = parseInt(req.query.limit) || 9;
     const startIndex = parseInt(req.query.startIndex) || 0;
-    let offer = req.query.offer;
-
-    if (offer === undefined || offer === "false") {
-      offer = { $in: [false, true] };
-    }
-
-    let furnished = req.query.furnished;
-
-    if (furnished === undefined || furnished === "false") {
-      furnished = { $in: [false, true] };
-    }
-
-    let parking = req.query.parking;
-
-    if (parking === undefined || parking === "false") {
-      parking = { $in: [false, true] };
-    }
-
-    let type = req.query.type;
-
-    if (type === undefined || type === "all") {
-      type = { $in: ["sale", "rent"] };
-    }
-
+    const offer = req.query.offer === "true" ? true : { $in: [true, false] };
+    const furnished =
+      req.query.furnished === "true" ? true : { $in: [true, false] };
+    const parking =
+      req.query.parking === "true" ? true : { $in: [true, false] };
+    const type =
+      req.query.type === "all" ? { $in: ["sale", "rent"] } : req.query.type;
     const searchTerm = req.query.searchTerm || "";
+    const sortField = req.query.sort || "createdAt";
+    const sortOrder = req.query.order === "asc" ? 1 : -1;
 
-    const sort = req.query.sort || "createdAt";
+    console.log("sortField:", sortField, "sortOrder:", sortOrder);
 
-    const order = req.query.order || "desc";
-
-    const listings = await Listing.find({
+    const query = {
       name: { $regex: searchTerm, $options: "i" },
       offer,
       furnished,
       parking,
       type,
-    })
-      .sort({ [sort]: order })
-      .limit(limit)
-      .skip(startIndex);
+    };
+
+    let sortOptions = {};
+    if (sortField === "price") {
+      sortOptions = {
+        $expr: {
+          $cond: {
+            if: { $gt: ["$discountPrice", 0] },
+            then: { $multiply: ["$discountPrice", sortOrder] },
+            else: { $multiply: ["$regularPrice", sortOrder] },
+          },
+        },
+      };
+    } else if (sortField === "createdAt") {
+      sortOptions = { [sortField]: sortOrder };
+    } else {
+      sortOptions = { [sortField]: sortOrder };
+    }
+
+    const listings = await Listing.aggregate([
+      { $match: query },
+      {
+        $addFields: {
+          sortPrice: {
+            $cond: {
+              if: { $gt: ["$discountPrice", 0] },
+              then: "$discountPrice",
+              else: "$regularPrice",
+            },
+          },
+        },
+      },
+      {
+        $sort:
+          sortField === "price"
+            ? { sortPrice: sortOrder }
+            : { [sortField]: sortOrder },
+      },
+      { $skip: startIndex },
+      { $limit: limit },
+      {
+        $project: {
+          sortPrice: 0,
+        },
+      },
+    ]);
 
     return res.status(200).json(listings);
   } catch (error) {

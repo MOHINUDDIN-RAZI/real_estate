@@ -7,6 +7,7 @@ export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const urlParams = new URLSearchParams(window.location.search);
@@ -16,12 +17,13 @@ export default function Header() {
   };
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
+    const urlParams = new URLSearchParams(window.location.search);
     const searchTermFromUrl = urlParams.get("searchTerm");
     if (searchTermFromUrl) {
       setSearchTerm(searchTermFromUrl);
     }
-  }, [location.search]);
+  }, [window.location.search]);
+
   return (
     <header className="bg-slate-300 shadow-md">
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
@@ -42,7 +44,7 @@ export default function Header() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button>
+          <button type="submit">
             <FaSearch className="text-slate-600" />
           </button>
         </form>
@@ -65,7 +67,7 @@ export default function Header() {
                 alt="profile"
               />
             ) : (
-              <li className=" text-slate-700 hover:underline"> Sign in</li>
+              <li className="text-slate-700 hover:underline">Sign in</li>
             )}
           </Link>
         </ul>

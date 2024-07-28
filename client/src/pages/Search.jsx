@@ -10,7 +10,7 @@ export default function Search() {
     parking: false,
     furnished: false,
     offer: false,
-    sort: "created_at",
+    sort: "createdAt",
     order: "desc",
   });
 
@@ -40,10 +40,10 @@ export default function Search() {
       setSidebardata({
         searchTerm: searchTermFromUrl || "",
         type: typeFromUrl || "all",
-        parking: parkingFromUrl === "true" ? true : false,
-        furnished: furnishedFromUrl === "true" ? true : false,
-        offer: offerFromUrl === "true" ? true : false,
-        sort: sortFromUrl || "created_at",
+        parking: parkingFromUrl === "true",
+        furnished: furnishedFromUrl === "true",
+        offer: offerFromUrl === "true",
+        sort: sortFromUrl || "createdAt",
         order: orderFromUrl || "desc",
       });
     }
@@ -67,51 +67,23 @@ export default function Search() {
   }, [location.search]);
 
   const handleChange = (e) => {
-    if (
-      e.target.id === "all" ||
-      e.target.id === "rent" ||
-      e.target.id === "sale"
-    ) {
-      setSidebardata({ ...sidebardata, type: e.target.id });
-    }
-
-    if (e.target.id === "searchTerm") {
-      setSidebardata({ ...sidebardata, searchTerm: e.target.value });
-    }
-
-    if (
-      e.target.id === "parking" ||
-      e.target.id === "furnished" ||
-      e.target.id === "offer"
-    ) {
-      setSidebardata({
-        ...sidebardata,
-        [e.target.id]:
-          e.target.checked || e.target.checked === "true" ? true : false,
-      });
-    }
-
-    if (e.target.id === "sort_order") {
-      const sort = e.target.value.split("_")[0] || "created_at";
-
-      const order = e.target.value.split("_")[1] || "desc";
-
+    const { id, value, checked } = e.target;
+    if (id === "searchTerm") {
+      setSidebardata({ ...sidebardata, searchTerm: value });
+    } else if (id === "all" || id === "rent" || id === "sale") {
+      setSidebardata({ ...sidebardata, type: id });
+    } else if (id === "parking" || id === "furnished" || id === "offer") {
+      setSidebardata({ ...sidebardata, [id]: checked });
+    } else if (id === "sort_order") {
+      const [sort, order] = value.split("_");
       setSidebardata({ ...sidebardata, sort, order });
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const urlParams = new URLSearchParams();
-    urlParams.set("searchTerm", sidebardata.searchTerm);
-    urlParams.set("type", sidebardata.type);
-    urlParams.set("parking", sidebardata.parking);
-    urlParams.set("furnished", sidebardata.furnished);
-    urlParams.set("offer", sidebardata.offer);
-    urlParams.set("sort", sidebardata.sort);
-    urlParams.set("order", sidebardata.order);
-    const searchQuery = urlParams.toString();
-    navigate(`/search?${searchQuery}`);
+    const urlParams = new URLSearchParams(sidebardata);
+    navigate(`/search?${urlParams.toString()}`);
   };
 
   const onShowMoreClick = async () => {
@@ -127,9 +99,10 @@ export default function Search() {
     }
     setListings([...listings, ...data]);
   };
+
   return (
     <div className="flex flex-col md:flex-row">
-      <div className="p-7  border-b-2 md:border-r-2 md:min-h-screen">
+      <div className="p-7 border-b-2 md:border-r-2 md:min-h-screen">
         <form onSubmit={handleSubmit} className="flex flex-col gap-8">
           <div className="flex items-center gap-2">
             <label className="whitespace-nowrap font-semibold">
@@ -218,10 +191,10 @@ export default function Search() {
               id="sort_order"
               className="border rounded-lg p-3"
             >
-              <option>Price high to low</option>
-              <option>Price low to hight</option>
-              <option>Latest</option>
-              <option>Oldest</option>
+              <option value="price_desc">Price high to low</option>
+              <option value="price_asc">Price low to high</option>
+              <option value="createdAt_desc">Latest</option>
+              <option value="createdAt_asc">Oldest</option>
             </select>
           </div>
           <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95">
